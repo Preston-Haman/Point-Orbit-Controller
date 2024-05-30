@@ -810,8 +810,17 @@ func _physics_process_grounded_movement(delta: float) -> void:
 # result:
 #	The collision information for the collision with an obstacle that happened while moving around
 #	the world without factoring in gravity.
-func _physics_process_grounded_slope_or_step(frame_velocity: Vector3, result: KinematicCollision) -> Vector3:
-	if !result or result.remainder.length_squared() < 0.0001:
+# 
+# max_iterations:
+#	The maximum number of recursive calls allowed by this method. This relies on the original caller
+#	respecting the default value of recursion_depth.
+# 
+# recursion_depth:
+#	A helper value to track how many times this method has called itself. External callers should
+#	leave this as the default value of zero. If changing how many recursive calls are allowed before
+#	giving up is desired, pass in a higher value for max_iterations.
+func _physics_process_grounded_slope_or_step(frame_velocity: Vector3, result: KinematicCollision, max_iterations: int = 5, recursion_depth: int = 0) -> Vector3:
+	if !result or result.remainder.length_squared() < 0.0001 or recursion_depth > max_iterations:
 		# We're done (this is a recursive method).
 		return frame_velocity;
 	
@@ -825,7 +834,10 @@ func _physics_process_grounded_slope_or_step(frame_velocity: Vector3, result: Ki
 		# It can't be a downwards slope because we hit it.
 		var slide_amount: Vector3 = result.remainder - result.remainder.project(result.normal);
 		slide_amount = slide_amount.normalized() * result.remainder.length();
-		return _physics_process_grounded_slope_or_step(frame_velocity, move_and_collide(slide_amount));
+		return _physics_process_grounded_slope_or_step(frame_velocity, \
+			move_and_collide(slide_amount, true, false), \
+			max_iterations, recursion_depth + 1 \
+		);
 	
 	# While this sorta works, step_depth is not fully enforced because the step_height might go
 	# over the height of the step! We could do a shape cast to find the height of the step; but,
@@ -843,7 +855,8 @@ func _physics_process_grounded_slope_or_step(frame_velocity: Vector3, result: Ki
 			else:
 				translate(transform.basis.xform_inv(step + depth) / scale);
 				return _physics_process_grounded_slope_or_step(frame_velocity, \
-					move_and_collide(result.remainder - depth, true, false) \
+					move_and_collide(result.remainder - depth, true, false), \
+					max_iterations, recursion_depth + 1 \
 				);
 		#else:
 			# We cannot go up this step; as, it's too thin. It acts as a wall.

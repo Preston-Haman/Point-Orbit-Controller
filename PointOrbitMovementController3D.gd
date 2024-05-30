@@ -1411,7 +1411,7 @@ func _rotate_horizontally(rotation_deg: float, camera_only: bool = false, from_s
 			# Independent/modified rotation
 			if _is_held(INPUT_DIRECTIONAL):
 				# Rotate self, undo camera's rotation.
-				rotate(transform.basis.xform(Vector3.UP), deg2rad(rotation_deg));
+				rotate(transform.basis.xform(Vector3.UP).normalized(), deg2rad(rotation_deg));
 				camera.horizontal_rotation -= rotation_deg;
 				camera.last_rotation_was_left = !camera.last_rotation_was_left;
 			# No else case; camera handled it already.
@@ -1420,7 +1420,7 @@ func _rotate_horizontally(rotation_deg: float, camera_only: bool = false, from_s
 			camera.horizontal_rotation += rotation_deg;
 		elif _should_camera_rotation_rotate_body():
 			# Rotate self
-			rotate(transform.basis.xform(Vector3.UP), deg2rad(rotation_deg));
+			rotate(transform.basis.xform(Vector3.UP).normalized(), deg2rad(rotation_deg));
 			camera.last_rotation_was_left = sign(rotation_deg) > 0.0;
 		else:
 			# Camera only
@@ -1430,7 +1430,7 @@ func _rotate_horizontally(rotation_deg: float, camera_only: bool = false, from_s
 		camera.horizontal_rotation += rotation_deg;
 	else:
 		# Rotate self
-		rotate(transform.basis.xform(Vector3.UP), deg2rad(rotation_deg));
+		rotate(transform.basis.xform(Vector3.UP).normalized(), deg2rad(rotation_deg));
 		camera.last_rotation_was_left = sign(rotation_deg) > 0.0;
 
 # Checks if any directional input that would cause camera rotation to rotate the body are

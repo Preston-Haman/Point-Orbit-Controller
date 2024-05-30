@@ -1671,6 +1671,10 @@ func _set_movement_state(next_movement_state: int) -> void:
 	if _is_any(next_movement_state, [MoveState.IDLE_TAKEOFF, MoveState.TAKEOFF]):
 		interrupt();
 	
+	if movement_state == MoveState.FREEFALL \
+	and _is_any(InputState.HELD, directional_input_states.values()):
+		_rotate_horizontally(camera.consume_rotation());
+	
 	emit_signal("movement_state_change", next_movement_state);
 	movement_state = next_movement_state;
 	

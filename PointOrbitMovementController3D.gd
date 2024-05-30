@@ -720,6 +720,8 @@ func _physics_process(delta: float) -> void:
 					move_up_amount += \
 						(body_capsule.shape as CapsuleShape).radius * DEFAULT_FOOT_SIZE_MULTIPLIER / tan(angle);
 				
+				# Sanity check... because, yes, it can be a problem.
+				move_up_amount = clamp(move_up_amount, 0.0, step_height);
 				translate(transform.basis.xform((Vector3.UP * move_up_amount) / scale.y));
 
 # _physics_process helper

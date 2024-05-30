@@ -783,7 +783,7 @@ func _physics_process_grounded_movement(delta: float) -> void:
 		frame_velocity = _physics_process_grounded_slope_or_step(frame_velocity, result);
 	
 	# Check step height/gravity down if needed...
-	if !(movement_state == MoveState.IDLE \
+	if !(_is_any(movement_state, [MoveState.IDLE, MoveState.TURNING_LEFT, MoveState.TURNING_RIGHT]) \
 	and _is_any(next_movement_state, [MoveState.IDLE, MoveState.TURNING_LEFT, MoveState.TURNING_RIGHT])) \
 	or _check_gravity_while_idle():
 		var down = transform.basis.xform(Vector3.DOWN);
@@ -1285,8 +1285,8 @@ func is_direct_movement_input(event: InputEvent) -> bool:
 	
 	return false;
 
-# Determines if the movement controller should apply gravity while the movement_state is
-# MoveState.IDLE.
+# Determines if the movement controller should apply gravity while grounded and the movement_state
+# is MoveState.IDLE, MoveState.TURNING_LEFT, or MoveState.TURNING_RIGHT.
 # 
 # By default, this method merely returns false -- override it to change this behaviour.
 func _check_gravity_while_idle() -> bool:

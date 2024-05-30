@@ -449,7 +449,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				self.movement_type = MoveType.DISABLED;
 	
 	# Enable/Disable independent drag
-	if event.is_action(INPUT_INDEPENDENT_MOUSE_DRAG_ROTATION) \
+	if event.is_action(INPUT_INDEPENDENT_MOUSE_DRAG_ROTATION) and allow_direct_independent_rotation \
 	and !(movement_type == MoveType.DEPENDENT or movement_type == MoveType.MODIFIED):
 		if event.is_pressed():
 			self.movement_type = MoveType.INDEPENDENT;

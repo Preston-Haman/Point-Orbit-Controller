@@ -628,7 +628,8 @@ func _ready() -> void:
 	# Setup camera
 	camera.GENERATE_DEFAULT_INPUT_ACTIONS = GENERATE_DEFAULT_INPUT_ACTIONS;
 	camera.automatic_rotation_speed = rotation_speed;
-	assert(camera.connect("horizontal_rotation_change", self, "_rotate_horizontally", [true]) == OK);
+	if camera.connect("horizontal_rotation_change", self, "_rotate_horizontally", [true]) != OK:
+		assert(false, "Failed to connect camera horizontal_rotation_change signal.");
 	
 	camera.translation = camera_position;
 	add_child(camera);

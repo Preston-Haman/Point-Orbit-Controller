@@ -1285,8 +1285,8 @@ func is_direct_movement_input(event: InputEvent) -> bool:
 	
 	return false;
 
-# Determines if the movement controller should apply gravity while the movement_state is
-# MoveState.IDLE.
+# Determines if the movement controller should apply gravity while grounded and the movement_state
+# is MoveState.IDLE, MoveState.TURNING_LEFT, or MoveState.TURNING_RIGHT.
 # 
 # By default, this method merely returns false -- override it to change this behaviour.
 func _check_gravity_while_idle() -> bool:
